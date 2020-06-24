@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Outline of the algorithm}
+\author{Matthew Gregoire}
+\date{June 2020}
+
+\usepackage{mathtools}
+\usepackage{braket}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+
+\subsection{Inputs}
+\begin{enumerate}
+    \item A modulus $N$
+    \item An integer $a \mod N$
+    \item A power $b$, where $b = a^m \mod N$
+\end{enumerate}
+
+\subsection{Outputs}
+The half-bit of $b$, with greater than $50\%$ probability.
+
+\section{First phase of the algorithm}
+
+Let $n$ be the number of bits needed to store any value from $0$ to $N-1$. So $n = \lceil N-1 \rceil$. This is what we need to do on the quantum computer:
+
+\begin{enumerate}
+    \item Initialize two quantum registers, each of size $n$, to the state $\ket{0}\ket{1}$.
+    \item Apply an $n$-bit Hadamard to the first register.
+    \item Apply the operator $U_{a^x}$ to the second register, so that each term in the superposition is of the form $\ket{x}\ket{a^x}$. (We need to figure out how to implement this operator.)
+    \item Apply the quantum Fourier transform to the first register.
+    \item Measure the first register to leave it in a particular state $\ket{y}$.
+\end{enumerate}
+
+Now calculate the value $k$ by rounding $yr/{2^n}$, where $r$ is the value such that $a^r = 1 \mod N$. The second register is left in an approximation of the superposition $\ket{\Psi_k}$, needed for the second phase.
+
+\section{Second phase of the algorithm}
+
+Calculate $k^{-1}$ in $\mod r$ using the extended Euclidean algorithm. We need $k$ to be invertible for the rest to work. Now we'll operate on the number $b' = b^{k^{-1}} \mod N$. On the quantum computer:
+
+\begin{enumerate}
+    \item Initialize a one-qubit register to $\ket{0}$, so that we have the overall state $\ket{\Psi_k}\ket{0}$.
+    \item Apply a Hadamard to the one-qubit register.
+    \item Apply a controlled $U_{b'}$ operation to the first register, using the second register as the control bit. (We need to implement this operator as well, by modifying the quantum circuit semi-classically.)
+    \item Apply a controlled phase shift of $-i$ to the second register, again using the second register as the control.
+    \item Apply a Hadamard to the second register again.
+    \item Measure the second register.
+\end{enumerate}
+
+The result of this measurement is the output of the ``magic box'' for the half-bit. Also, we don't disturb the state $\ket{\Psi_k}$ during the second phase, so we can re-use this state later on.
+
+Once we have the half-bit, I'm not sure how we solve the discrete logarithm problem. Blum and Micali's paper will probably go into detail on that, but we can worry about it later because this algorithm is self-contained.
+
+\end{document}
