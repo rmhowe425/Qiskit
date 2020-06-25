@@ -1,4 +1,5 @@
-# from qiskit import *
+from qiskit import *
+import math
 
 # In our final Jupyter notebook we won't have to
 # break things up functionally like this, but it
@@ -26,6 +27,19 @@ def invert(x, N):
 # where b = a^m (mod N) with >50% probability.
 # (this is where our main algorithm goes)
 def oracle(a, b, N):
+    #Find number of bits(n) needed to store a value from 0 to N-1
+    #and initialize 2 quantum registers of size n
+    n = math.floor(math.log(N)/math.log(2)) + 1
+    qc = QuantumCircuit(QuantumRegister(n, 'qr0'), QuantumRegister(n, 'qr1'))
+    
+    #Change second register to state |1>
+    for x in range:
+        qc.x(n+x)
+    
+    #Add H gate to first register
+    for x in range(n):
+        qc.h(x)
+    
     return 0
 
 # Solves the discrete logarithm problem for 
