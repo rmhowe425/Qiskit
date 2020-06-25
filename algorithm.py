@@ -1,4 +1,4 @@
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit.circuit.library import QFT
 import math
 
@@ -31,21 +31,23 @@ def oracle(a, b, N):
     # Find number of bits(n) needed to store a value from 0 to N-1
     # and initialize 2 quantum registers of size n
     n = math.ceil(math.log(N)/math.log(2))
-    qc = QuantumCircuit(2*n, 2*n)
+    qr1, qr2 = QuantumRegister(n), QuantumRegister(n)
+    cr1, cr2  = ClassicalRegister(n), ClassicalRegister(n)
+    qc = QuantumCircuit(qr1, qr2, cr1, cr2)
     
-    #Change second register to state |1>
-    qc.x(2*n-1)
+    #Change second register to state |00...01>
+    qc.x(qr2[n-1])
     
     #Add H gate to first register
     for i in range(n):
-        qc.h(i)
+        qc.h(qr1[i])
     
     # Apply U_(a^x) here
 
-    qc.append(QFT(n), [i for i in range(n)])
+    qc.append(QFT(n), [qr1[i] for i in range(n)])
 
     for i in range(n):
-        qc.measure(i, i)
+        qc.measure(qr1[i], cr1[i])
     
     print(qc.draw(output="text"))
     
