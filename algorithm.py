@@ -1,6 +1,8 @@
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit.circuit.library import QFT
+from qiskit.extensions import UnitaryGate
 import math
+import numpy as np
 
 # In our final Jupyter notebook we won't have to
 # break things up functionally like this, but it
@@ -24,6 +26,18 @@ def invert(x, N):
     
     return t[-2] % N
 
+# Returns a unitary matrix which has the effect of multiplying each
+# input |x> by a, resulting in the state |ax>.
+def create_unitary(dim, a, N):
+    U = np.zeros((dim, dim))
+    for i in range(dim):
+        power = (i*a) % N
+        U[i, power] = 1
+    U = U/(np.sqrt(dim))
+    return U
+
+print(create_unitary(4, 3, 5))
+
 # b is some power of a, and the oracle outputs m,
 # where b = a^m (mod N) with >50% probability.
 # (this is where our main algorithm goes)
@@ -42,18 +56,16 @@ def oracle(a, b, N):
     for i in range(n):
         qc.h(qr1[i])
     
-    # Apply U_(a^x) here
+    # We need log_2(n) different matrices U_(a^(2^x))
 
     qc.append(QFT(n), [qr1[i] for i in range(n)])
 
     for i in range(n):
         qc.measure(qr1[i], cr1[i])
     
-    print(qc.draw(output="text"))
+    # print(qc.draw(output="text"))
     
     return 0
-
-oracle(2, 2, 8)
 
 # Solves the discrete logarithm problem for 
 # b = a^m (mod N) using repeated calls to the
