@@ -28,18 +28,17 @@ def invert(x, N):
 # Returns a unitary matrix which has the effect of multiplying each
 # input |x> by a in mod N, resulting in the state |ax>.
 def create_unitary(a, N):
-    dim = 2**int(np.ceil(np.log(N)/np.log(2)))
+    dim = 2**int(np.ceil(np.log(N)/np.log(2)) + 1)
     U = np.zeros((dim, dim))
     # Generate a permutation of the multiplicative group of Z_N.
+    for i in range(dim/2):
+        U[i,i] = 1
     for i in range(N):
-        U[i, (a*i) % N] = 1
+        U[i, ((a*i) % N)+(dim/2)] = 1
     # The remaining states are irrelevant.
-    for i in range(N, dim):
-        U[i, i] = 1
-    U *= 1/np.sqrt(dim)
+    for i in range(N, dim/2):
+        U[i, dim/2 + i] = 1
     return U
-
-print(create_unitary(2, 7))
 
 # b is some power of a, and the oracle outputs m,
 # where b = a^m (mod N) with >50% probability.
@@ -47,9 +46,9 @@ print(create_unitary(2, 7))
 def oracle(a, b, N):
     # Find number of bits(n) needed to store a value from 0 to N-1
     # and initialize 2 quantum registers of size n
-    n = np.ceil(np.log(N)/np.log(2))
+    n = int(np.ceil(np.log(N)/np.log(2)))
     qr1, qr2 = QuantumRegister(n), QuantumRegister(n)
-    cr1, cr2  = ClassicalRegister(n), ClassicalRegister(n)
+    cr1, cr2 = ClassicalRegister(n), ClassicalRegister(n)
     qc = QuantumCircuit(qr1, qr2, cr1, cr2)
     
     #Change second register to state |00...01>
@@ -60,15 +59,22 @@ def oracle(a, b, N):
         qc.h(qr1[i])
     
     # We need log_2(n) different matrices U_(a^(2^x))
+    for i in range(n):
+        U = create_unitary(a**i, N)
+        qubits = [qr1[i]] + 
+        qc.iso(U, [])
+
 
     qc.append(QFT(n), [qr1[i] for i in range(n)])
 
     for i in range(n):
         qc.measure(qr1[i], cr1[i])
     
-    # print(qc.draw(output="text"))
+    print(qc.draw(output="text"))
     
     return 0
+
+oracle(2, 1, 7)
 
 # Solves the discrete logarithm problem for 
 # b = a^m (mod N) using repeated calls to the
