@@ -1,7 +1,6 @@
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit.circuit.library import QFT
 from qiskit.extensions import UnitaryGate
-import math
 import numpy as np
 
 # In our final Jupyter notebook we won't have to
@@ -27,16 +26,20 @@ def invert(x, N):
     return t[-2] % N
 
 # Returns a unitary matrix which has the effect of multiplying each
-# input |x> by a, resulting in the state |ax>.
-def create_unitary(dim, a, N):
+# input |x> by a in mod N, resulting in the state |ax>.
+def create_unitary(a, N):
+    dim = 2**int(np.ceil(np.log(N)/np.log(2)))
     U = np.zeros((dim, dim))
-    for i in range(dim):
-        power = (i*a) % N
-        U[i, power] = 1
-    U = U/(np.sqrt(dim))
+    # Generate a permutation of the multiplicative group of Z_N.
+    for i in range(N):
+        U[i, (a*i) % N] = 1
+    # The remaining states are irrelevant.
+    for i in range(N, dim):
+        U[i, i] = 1
+    U *= 1/np.sqrt(dim)
     return U
 
-print(create_unitary(4, 3, 5))
+print(create_unitary(2, 7))
 
 # b is some power of a, and the oracle outputs m,
 # where b = a^m (mod N) with >50% probability.
@@ -44,7 +47,7 @@ print(create_unitary(4, 3, 5))
 def oracle(a, b, N):
     # Find number of bits(n) needed to store a value from 0 to N-1
     # and initialize 2 quantum registers of size n
-    n = math.ceil(math.log(N)/math.log(2))
+    n = np.ceil(np.log(N)/np.log(2))
     qr1, qr2 = QuantumRegister(n), QuantumRegister(n)
     cr1, cr2  = ClassicalRegister(n), ClassicalRegister(n)
     qc = QuantumCircuit(qr1, qr2, cr1, cr2)
