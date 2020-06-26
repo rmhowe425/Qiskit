@@ -3,3 +3,4 @@ outline.fdb_latexmk
 outline.fls
 outline.log
 outline.synctex.gz
+error.py

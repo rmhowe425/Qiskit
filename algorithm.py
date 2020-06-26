@@ -31,13 +31,15 @@ def create_unitary(a, N):
     dim = 2**int(np.ceil(np.log(N)/np.log(2)) + 1)
     U = np.zeros((dim, dim))
     # Generate a permutation of the multiplicative group of Z_N.
-    for i in range(dim/2):
+    for i in range(int(dim/2)):
         U[i,i] = 1
     for i in range(N):
-        U[i, ((a*i) % N)+(dim/2)] = 1
+        U[int(dim/2) + i, ((a*i) % N)+int(dim/2)] = 1
     # The remaining states are irrelevant.
-    for i in range(N, dim/2):
-        U[i, dim/2 + i] = 1
+    for i in range(N, int(dim/2)):
+        U[int(dim/2) + i, int(dim/2) + i] = 1
+    print("Multiply by", a)
+    print(U)
     return U
 
 # b is some power of a, and the oracle outputs m,
@@ -60,9 +62,9 @@ def oracle(a, b, N):
     
     # We need log_2(n) different matrices U_(a^(2^x))
     for i in range(n):
-        U = create_unitary(a**i, N)
-        qubits = [qr1[i]] + 
-        qc.iso(U, [])
+        U = create_unitary(a**(2**(n-i)) % N, N)
+        qubits = [qr1[i]] + [qr2[j] for j in range(n)]
+        qc.iso(U, qubits, [])
 
 
     qc.append(QFT(n), [qr1[i] for i in range(n)])
@@ -74,7 +76,7 @@ def oracle(a, b, N):
     
     return 0
 
-oracle(2, 1, 7)
+# oracle(3, 1, 13)
 
 # Solves the discrete logarithm problem for 
 # b = a^m (mod N) using repeated calls to the
