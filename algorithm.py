@@ -3,9 +3,15 @@ from qiskit.circuit.library import QFT
 from qiskit.extensions import UnitaryGate
 import numpy as np
 
+
 # In our final Jupyter notebook we won't have to
 # break things up functionally like this, but it
 # should help for now.
+
+# Verification user input to construct problem to be solved
+def verify(a,b,N):
+    return 0
+
 
 # Calculates the multiplicative inverse of x mod N
 # (the number y such that xy = 1 (mod N)) using
