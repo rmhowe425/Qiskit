@@ -1,34 +1,34 @@
-team page
+1.team page
 https://www.hackerearth.com/challenges/hackathon/qiskit-community-summer-jam-north-carolina/participants/#participants
 
-team slack
+2.team slack
 https://app.slack.com/client/T015M3WFLBU/G015C7WS8K1/thread/G015C7WS8K1-1593360323.018000
 
-group slack
+3.group slack
 https://qiskit.slack.com/archives/C014VEWSU58
 
-example for shor
+4.example for shor
 https://www.thehindu.com/sci-tech/technology/what-quantum-computing-means-for-your-bank-accounts-and-smartphones/article23791602.ece
 
-qiskit textbook
+5.qiskit textbook
 https://qiskit.org/textbook/ch-algorithms/shor.html
 
-qiskit sample
+6.qiskit sample
 https://quantum-computing.ibm.com/docs/start-iqx/code/first-circ
 
-paper
+7.paper
 https://link.springer.com/chapter/10.1007/978-3-319-59879-6_20
 
-textbook
+8.textbook
 http://mmrc.amss.cas.cn/tlb/201702/W020170224608149940643.pdf
 
-Given the magic box we implement, the algorithm to solve the discrete logarithm problem is given on page 107 of this PDF: 
+9.Given the magic box we implement, the algorithm to solve the discrete logarithm problem is given on page 107 of this PDF: 
 https://dspace.mit.edu/bitstream/handle/1721.1/14709/18494044-MIT.pdf?sequence=2
 
-Other slides
+10.Other slides
 https://www.slideserve.com/rusk/quantum-computing
 
-beginner
+11.beginner
 https://arxiv.org/pdf/1804.03719.pdf
 
 https://medium.com/@jonathan_hui/qc-period-finding-in-shors-algorithm-7eb0c22e8202
