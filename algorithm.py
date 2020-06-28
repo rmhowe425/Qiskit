@@ -74,31 +74,31 @@ def oracle(a, b, N):
     
     print(qc.draw(output="text"))
     
-    # Phase 2 Starts here
-    # Calculate k^-1 and find its binary representation
-    k_inv_bin = bin(invert(k, r))
+    # # Phase 2 Starts here
+    # # Calculate k^-1 and find its binary representation
+    # k_inv_bin = bin(invert(k, r))
 
-    # Step 1: Initialize a 1 qubit register to |0>
-    qr3 = QuantumRegister(1)
-    cr3 = ClassicalRegister(1)
-    qc.add_register(qr3)
-    qc.add_register(cr3)
+    # # Step 1: Initialize a 1 qubit register to |0>
+    # qr3 = QuantumRegister(1)
+    # cr3 = ClassicalRegister(1)
+    # qc.add_register(qr3)
+    # qc.add_register(cr3)
     
-    # Step 2: Add H gate to new register
-    qc.h(qr3[0])
+    # # Step 2: Add H gate to new register
+    # qc.h(qr3[0])
     
-    # Step 3: applying controlled U operation
-    for pos, bit in enumerate(k_inv_bin):
-        if(bit == '1'):
-            #apply U operation here
+    # # Step 3: applying controlled U operation
+    # for pos, bit in enumerate(k_inv_bin):
+    #     if(bit == '1'):
+    #         #apply U operation here
     
-    # Step 4: Applying a controlled phase shift of -i to 
-    # to second register
-    qc.rz(-pi/2 , qr3[0])
+    # # Step 4: Applying a controlled phase shift of -i to 
+    # # to second register
+    # qc.rz(-pi/2 , qr3[0])
     
-    # Step 5 & 6: Apply H-get to 2nd register and measure
-    qc.h(qr3[0])
-    qc.measure(qr3[0], cr3[0])
+    # # Step 5 & 6: Apply H-get to 2nd register and measure
+    # qc.h(qr3[0])
+    # qc.measure(qr3[0], cr3[0])
     
     return 0
 
