@@ -24,3 +24,19 @@ http://mmrc.amss.cas.cn/tlb/201702/W020170224608149940643.pdf
 
 Given the magic box we implement, the algorithm to solve the discrete logarithm problem is given on page 107 of this PDF: 
 https://dspace.mit.edu/bitstream/handle/1721.1/14709/18494044-MIT.pdf?sequence=2
+
+Other slides
+https://www.slideserve.com/rusk/quantum-computing
+
+beginner
+https://arxiv.org/pdf/1804.03719.pdf
+
+https://medium.com/@jonathan_hui/qc-period-finding-in-shors-algorithm-7eb0c22e8202
+
+https://www.google.com/search?q=unitary+matrix+example+FOR+SHOR%27S&tbm=isch&ved=2ahUKEwj
+T8fH02KPqAhVE0FMKHUOHCpIQ2-cCegQIABAA&oq=unitary+matrix+example+FOR+SHOR%27S&gs_lcp=CgNpbWcQAzoCCAA
+6BAgAEB46BggAEAgQHlC9LFjQPmDyQGgAcAB4AIABbogBsAaSAQQxMC4xmAEAoAEBqgELZ3dzLXdpei1pbWc&sclient=img&ei=
+fx_4XpO2E8SgzwLDjqqQCQ&bih=639&biw=1268&rlz=1C5CHFA_enUS800US800#imgrc=sUC7hor77pNvrM
+
+https://www.quantiki.org/wiki/shors-factoring-algorithm
+https://www.topcoder.com/shors-algorithm-in-quantum-computing/
