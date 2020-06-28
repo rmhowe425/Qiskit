@@ -1,4 +1,4 @@
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, execute, Aer
 from qiskit.circuit.library import QFT
 from qiskit.extensions import UnitaryGate
 import numpy as np
@@ -33,7 +33,7 @@ def invert(x, N):
 
 # Returns a unitary matrix which has the effect of multiplying each
 # input |x> by a in mod N, resulting in the state |ax>.
-def create_unitary(a, N):
+def create_controlled_unitary(a, N):
     dim = 2**int(np.ceil(np.log(N)/np.log(2)) + 1)
     U = np.zeros((dim, dim))
     # Generate a permutation of the multiplicative group of Z_N.
@@ -44,6 +44,17 @@ def create_unitary(a, N):
     # The remaining states are irrelevant.
     for i in range(N, int(dim/2)):
         U[int(dim/2) + i, int(dim/2) + i] = 1
+    return U
+
+def create_unitary(a, N):
+    dim = 2**int(np.ceil(np.log(N)/np.log(2)))
+    U = np.zeros((dim, dim))
+    # Generate a permutation of the multiplicative group of Z_N.
+    for i in range(N):
+        U[i, ((a*i) % N)] = 1
+    # The remaining states are irrelevant.
+    for i in range(N, dim):
+        U[i, i] = 1
     return U
 
 # b is some power of a, and the oracle outputs m,
@@ -62,11 +73,8 @@ def oracle(a, b, N):
     # and initialize 2 quantum registers of size n
     n = int(np.ceil(np.log(N)/np.log(2)))
     qr1, qr2 = QuantumRegister(n), QuantumRegister(n)
-    cr1, cr2 = [ClassicalRegister(1) for i in range(n)], ClassicalRegister(1)
-    qc = QuantumCircuit(qr1, qr2)
-    for register in cr1:
-        qc.add_register(register)
-    qc.add_register(cr2)
+    cr1, cr2 = ClassicalRegister(n), ClassicalRegister(1)
+    qc = QuantumCircuit(qr1, qr2, cr1, cr2)
     
     #Change second register to state |00...01>
     qc.x(qr2[n-1])
@@ -77,7 +85,7 @@ def oracle(a, b, N):
     
     # We need log_2(n) different matrices U_(a^(2^x))
     for i in range(n):
-        U = create_unitary(a**(2**(n-i)) % N, N)
+        U = create_controlled_unitary(a**(2**(n-i)) % N, N)
         qubits = [qr1[i]] + [qr2[j] for j in range(n)]
         qc.iso(U, qubits, [])
 
@@ -89,28 +97,43 @@ def oracle(a, b, N):
     
     # Now cr1 is in state y. We define k to be the closest integer to y*r / 2**n.
     # Reuse the first quantum register, because we don't need it anymore.
-    qc.x(qr1[0]).c_if(cr1[0], 1)
+    for i in range(2**(n-1), 2**n):
+        qc.x(qr1[0]).c_if(cr1, i)
 
     qc.h(qr1[0])
 
+    qc.barrier()
+
     # I don't think there's any way to get the result of the measurement mid-circuit
     # in qiskit. So this is a stop-gap method for now.
+
     for y in range(2**n):
         k = int(np.round(y*r/(2**n))) % r
         kInv = bin(invert(k, r))[2:]
 
-        for i in range(len(kInv)):
-            print(i)
-            bit = int(kInv[i])
-            if bit == 1:
-                # Apply U operation only if the value of cr1 is y.
-                break
+        # Pad kInv with initial zeros
+        while len(kInv) < n:
+            kInv = '0' + kInv
+
+        if '1' in kInv:
+            for i in range(len(kInv)):
+                bit = int(kInv[i])
+                if bit == 1:
+                    # Apply U operation only if the value of cr1 is y.
+                    U = create_unitary(b**(2**i), N)
+                    qc.iso(U, [qr2[i] for i in range(n)], []).c_if(cr1, y)
     
+    qc.barrier()
     qc.rz(-np.pi/2 , qr1[0])
     qc.h(qr1[0])
     qc.measure(qr1[0], cr2[0])
     
-    print(qc.draw(output="text"))
+    # print(qc.draw(output="text"))
+
+    backend = Aer.get_backend('statevector_simulator')
+    print("Running circuit...")
+    result = execute(qc, backend, shots=8192).result().get_counts(qc)
+    print(result)
     
     # # Phase 2 Starts here
     # # Calculate k^-1 and find its binary representation
