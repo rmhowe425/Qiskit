@@ -100,8 +100,6 @@ def oracle(a, b, N):
     for y in range(2**n):
         k = int(np.round(y*r/(2**n))) % r
         kInv = invert(k, r)
-        print(k, kInv, r)
-        print(kInv)
         
 
     
