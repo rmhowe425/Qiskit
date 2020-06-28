@@ -109,7 +109,7 @@ def oracle(a, b, N):
     
     # # Phase 2 Starts here
     # # Calculate k^-1 and find its binary representation
-    # k_inv_bin = bin(invert(k, r))
+    # k_inv_bin = bin(invert(k, r))[2:]
 
     # # Step 1: Initialize a 1 qubit register to |0>
     # qr3 = QuantumRegister(1)
@@ -120,10 +120,12 @@ def oracle(a, b, N):
     # # Step 2: Add H gate to new register
     # qc.h(qr3[0])
     
-    # # Step 3: applying controlled U operation
+    # # Step 3: applying controlled U_(b^x) operation
     # for pos, bit in enumerate(k_inv_bin):
     #     if(bit == '1'):
-    #         #apply U operation here
+    #        U = create_unitary(b**(2**(n-pos)) % N, N)
+    #        qubits = [qr3[0]] + [qr2[j] for j in range(n)]
+    #        qc.iso(U, qubits, [])
     
     # # Step 4: Applying a controlled phase shift of -i to 
     # # to second register
