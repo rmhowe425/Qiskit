@@ -62,12 +62,11 @@ def oracle(a, b, N):
     # and initialize 2 quantum registers of size n
     n = int(np.ceil(np.log(N)/np.log(2)))
     qr1, qr2 = QuantumRegister(n), QuantumRegister(n)
-    cr1, cr2 = [ClassicalRegister(1) for i in range(n)], [ClassicalRegister(1) for i in range(n)]
+    cr1, cr2 = [ClassicalRegister(1) for i in range(n)], ClassicalRegister(1)
     qc = QuantumCircuit(qr1, qr2)
     for register in cr1:
         qc.add_register(register)
-    for register in cr2:
-        qc.add_register(register)
+    qc.add_register(cr2)
     
     #Change second register to state |00...01>
     qc.x(qr2[n-1])
@@ -90,8 +89,7 @@ def oracle(a, b, N):
     
     # Now cr1 is in state y. We define k to be the closest integer to y*r / 2**n.
     # Reuse the first quantum register, because we don't need it anymore.
-    for i in range(n):
-        qc.x(qr1[i]).c_if(cr1[i], 1)
+    qc.x(qr1[0]).c_if(cr1[0], 1)
 
     qc.h(qr1[0])
 
@@ -99,9 +97,18 @@ def oracle(a, b, N):
     # in qiskit. So this is a stop-gap method for now.
     for y in range(2**n):
         k = int(np.round(y*r/(2**n))) % r
-        kInv = invert(k, r)
-        
+        kInv = bin(invert(k, r))[2:]
 
+        for i in range(len(kInv)):
+            print(i)
+            bit = int(kInv[i])
+            if bit == 1:
+                # Apply U operation only if the value of cr1 is y.
+                break
+    
+    qc.rz(-np.pi/2 , qr1[0])
+    qc.h(qr1[0])
+    qc.measure(qr1[0], cr2[0])
     
     print(qc.draw(output="text"))
     
