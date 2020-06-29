@@ -51,10 +51,11 @@ def EstimateCrossCorrelation(G, X, n, l, d):
 
 '''
    Main algorithm for computing the logarithm.
-   * Assumes that epsilon was calculated beforehand *
    @param G: Base of a the logarithm.
    @param X: Power of the logarithm.
    @param n: Modulus
+
+   * Assumes that epsilon was calculated beforehand *
 
    Used while loops in place of for loops because Python's
    range function does not use floating point numbers and I
@@ -62,7 +63,7 @@ def EstimateCrossCorrelation(G, X, n, l, d):
    numbers using floor() or int(). 
 '''
 def Logarithm(G, X, n):
-    step = (n * e)         # Compute step -> Converted to int to fix float error in 1st for loop
+    step = (n * e)         # Compute step
     l = log(n)             # Number of iterations
     d = round((l / 4), 10) # Limit on probability error
 
