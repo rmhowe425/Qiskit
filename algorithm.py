@@ -65,7 +65,7 @@ def create_unitary(a, N):
 # b is some power of a, and the oracle outputs m,
 # where b = a^m (mod N) with >50% probability.
 # (this is where our main algorithm goes)
-def oracle(a, b, N):
+def oracle(a, b, N, verbose=False):
 
     # Calculate the order of a
     r = 1
@@ -133,44 +133,38 @@ def oracle(a, b, N):
     qc.h(qr1[0])
     qc.measure(qr1[0], cr2[0])
     
-    # print(qc.draw(output="text"))
+    if verbose:
+        print(qc.draw(output="text"))
 
-    backend = Aer.get_backend('statevector_simulator')
-    print("Running circuit...")
-    result = execute(qc, backend, shots=8192).result().get_counts(qc)
-    print(result)
-    
-    # # Phase 2 Starts here
-    # # Calculate k^-1 and find its binary representation
-    # k_inv_bin = bin(invert(k, r))[2:]
+    backend_name = 'qasm_simulator'
+    shots = 2048
+    backend = Aer.get_backend(backend_name)
+    if verbose:
+        print("Running circuit on", backend_name, "...")
+    result = execute(qc, backend, shots=shots).result().get_counts(qc)
 
-    # # Step 1: Initialize a 1 qubit register to |0>
-    # qr3 = QuantumRegister(1)
-    # cr3 = ClassicalRegister(1)
-    # qc.add_register(qr3)
-    # qc.add_register(cr3)
+    if verbose:
+        print(result)
     
-    # # Step 2: Add H gate to new register
-    # qc.h(qr3[0])
-    
-    # # Step 3: applying controlled U_(b^x) operation
-    # for pos, bit in enumerate(k_inv_bin):
-    #     if(bit == '1'):
-    #        U = create_unitary(b**(2**(n-pos)) % N, N)
-    #        qubits = [qr3[0]] + [qr2[j] for j in range(n)]
-    #        qc.iso(U, qubits, [])
-    
-    # # Step 4: Applying a controlled phase shift of -i to 
-    # # to second register
-    # qc.rz(-pi/2 , qr3[0])
-    
-    # # Step 5 & 6: Apply H-get to 2nd register and measure
-    # qc.h(qr3[0])
-    # qc.measure(qr3[0], cr3[0])
-    
-    return 0
+    zeros_count = 0
+    ones_count = 0
 
-oracle(3, 1, 13)
+    for k in result.keys():
+        half_bit = k[0]
+        if half_bit == '0':
+            zeros_count += result[k]
+        else:
+            ones_count += result[k]
+
+    if verbose:
+        print('Zeros:', zeros_count, '\tOnes:', ones_count)
+    
+    if zeros_count > ones_count:
+        return 0
+    else:
+        return 1
+
+print(oracle(3, 1, 13, True))
 
 # Solves the discrete logarithm problem for 
 # b = a^m (mod N) using repeated calls to the
