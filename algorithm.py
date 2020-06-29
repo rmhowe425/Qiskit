@@ -9,8 +9,13 @@ import numpy as np
 # should help for now.
 
 # Verification user input to construct problem to be solved
+# When  𝑎  and  𝑁  are positive Z,  𝑎  is less than  𝑁 , ? and they have no common factors? 
 def verify(a,b,N):
-    return 0
+    if a<0 or b<0 or N<0 or a>N:
+        print("Invalid input")
+        return 0
+    else:
+        print("Valid input")
 
 
 # Calculates the multiplicative inverse of x mod N
