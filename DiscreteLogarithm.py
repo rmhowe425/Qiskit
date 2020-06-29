@@ -8,7 +8,7 @@ def calculate_order(a, n):
     power = 1
     curr = a
     while (curr != 1):
-        curr *= a
+        curr = (curr * a) % n
         power += 1
     return power
 
@@ -75,6 +75,7 @@ def EstimateCrossCorrelation(G, X, n, l, d, period):
 '''
 def Logarithm(G, X, n):
     step = (n * e)         # Compute step
+    print(step)
     l = log(n)             # Number of iterations
     d = round((l / 4), 10) # Limit on probability error
 
@@ -87,6 +88,7 @@ def Logarithm(G, X, n):
 
         # Make initial guess. 
         while c <= (n - 1):
+            print("c:", c)
             
             # Refine guess.
             while i >= 0:
@@ -103,3 +105,6 @@ def Logarithm(G, X, n):
             
         if ((G ** c) % n) == X:
             return c
+
+# Should return 3
+print(Logarithm(7, 13, 15))

@@ -52,6 +52,7 @@ def create_controlled_unitary(a, N):
     return U
 
 def create_unitary(a, N):
+    a = int(np.round(a) % N)
     dim = 2**int(np.ceil(np.log(N)/np.log(2)))
     U = np.zeros((dim, dim))
     # Generate a permutation of the multiplicative group of Z_N.
@@ -137,7 +138,7 @@ def oracle(a, b, N, verbose=False):
         print(qc.draw(output="text"))
 
     backend_name = 'qasm_simulator'
-    shots = 2048
+    shots = int(np.ceil(8*np.pi))
     backend = Aer.get_backend(backend_name)
     if verbose:
         print("Running circuit on", backend_name, "...")
@@ -164,7 +165,7 @@ def oracle(a, b, N, verbose=False):
     else:
         return 1
 
-print(oracle(3, 1, 13, True))
+# print(oracle(3, 1, 13, True))
 
 # Solves the discrete logarithm problem for 
 # b = a^m (mod N) using repeated calls to the
