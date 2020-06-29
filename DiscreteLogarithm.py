@@ -1,5 +1,16 @@
 from numpy import log, sqrt, floor
 from random import randint
+from algorithm import oracle
+
+e = 0.05   # Minimum epsilon from the Magic Box paper.
+
+def calculate_order(a, n):
+    power = 1
+    curr = a
+    while (curr != 1):
+        curr *= a
+        power += 1
+    return power
 
 '''
    Determines the most significant bit of an integer c
@@ -17,7 +28,7 @@ def n1(c, n):
 
 '''
    Decides which 'guess' best fits with the output of the oracle using cross correlation.
-   @param G: Base of a the logarithm.
+   @param G: Base of the logarithm.
    @param X: Power of the logarithm.
    @param n: Modulus.
    @param l: Lag of cross correlation - refers to how far the series are offset.
@@ -30,17 +41,17 @@ def n1(c, n):
    didnt want to introduce logical errors by rounding off
    numbers using floor() or int(). 
 '''
-def EstimateCrossCorrelation(G, X, n, l, d):
+def EstimateCrossCorrelation(G, X, n, l, d, period):
     total = 0  # Called 'sum' in algorithm
     trial = 1  
-    
+
     # Compute the number of trials
     m = (2 / (sqrt(d) * e))
 
     # Compute estimate
     while trial <= m:
         t = randint(1, n)
-        output = Oracle(G, X, n)  # Oracle(base, LHS, mod)
+        output = oracle(G, X, n)  # Oracle(base, LHS, mod)
 
         if output == 0:
             output = -1
@@ -67,6 +78,8 @@ def Logarithm(G, X, n):
     l = log(n)             # Number of iterations
     d = round((l / 4), 10) # Limit on probability error
 
+    period = calculate_order(G, n)
+
     # Repeat until logarithm is found.
     while True:
         c = 0
@@ -77,10 +90,10 @@ def Logarithm(G, X, n):
             
             # Refine guess.
             while i >= 0:
-                Xi = (2 ** i) * X
+                Xi = ((2 ** i) * X) % n
 
-                if (EstimateCrossCorrelation(G, Xi, n, c/2, d)
-                    > EstimateCrossCorrelation(G, Xi, n, c/2 + n/2, d)):
+                if (EstimateCrossCorrelation(G, Xi, n, c/2, d, period)
+                    > EstimateCrossCorrelation(G, Xi, n, c/2 + n/2, d, period)):
                     c = c/2
                 else:
                     c = (c/2 + n/2)
@@ -88,5 +101,5 @@ def Logarithm(G, X, n):
                 i -= 1
             c += step
             
-        if (G ** c) == X:
+        if ((G ** c) % n) == X:
             return c
