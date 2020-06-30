@@ -20,6 +20,6 @@ There is much future work to be done. If IBM implements the control flow require
 
 Kaliski Jr., B. (2017). A Quantum “Magic Box” for the Discrete Logarithm Problem. Cryptology EPrint Archive, Report 2017/745. https://eprint.iacr.org/2017/745
 
-Kaliski Jr., B. (1988). Elliptic Curves and Cryptography: A Pseudorandom Bit Generator and Other Tools (Doctoral dissertation, MIT, Boston, USA). Retrieved from https://dspace.mit.edu/bitstream/handle/1721.1/14709/18494044-MIT.pdf
+Kaliski Jr., B. (1988). Elliptic Curves and Cryptography: A Pseudorandom Bit Generator and Other Tools (Doctoral dissertation, MIT, Cambridge, USA). Retrieved from https://dspace.mit.edu/bitstream/handle/1721.1/14709/18494044-MIT.pdf
 
 Mosca M., Ekert A. (1999) The Hidden Subgroup Problem and Eigenvalue Estimation on a Quantum Computer. In: Williams C.P. (eds) Quantum Computing and Quantum Communications. QCQC 1998. Lecture Notes in Computer Science, vol 1509. Springer, Berlin, Heidelberg
