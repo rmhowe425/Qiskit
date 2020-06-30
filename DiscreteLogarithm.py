@@ -1,8 +1,8 @@
-from numpy import log, sqrt, floor
+from numpy import log, sqrt, floor, pi, arange
 from random import randint
 from algorithm import oracle
 
-e = 0.05   # Minimum epsilon from the Magic Box paper.
+e = 1/pi   # Minimum epsilon from the Magic Box paper.
 
 def calculate_order(a, n):
     power = 1
@@ -43,20 +43,21 @@ def n1(c, n):
 '''
 def EstimateCrossCorrelation(G, X, n, l, d, period):
     total = 0  # Called 'sum' in algorithm
-    trial = 1  
 
     # Compute the number of trials
-    m = (2 / (sqrt(d) * e))
+    m = int(round(2 / (sqrt(d) * e)))
+    print("m:", m)
 
     # Compute estimate
-    while trial <= m:
+    for trial in range(m):
+        print("Trial:", trial)
         t = randint(1, n)
         output = oracle(G, X, n)  # Oracle(base, LHS, mod)
 
         if output == 0:
             output = -1
         
-        total = total + (output(X + (period * G)) * n1(t + l, n))
+        total = total + (output*(X * (G ** period)) * n1(t + l, n))
 
     return (total / m)
 
@@ -74,37 +75,34 @@ def EstimateCrossCorrelation(G, X, n, l, d, period):
    numbers using floor() or int(). 
 '''
 def Logarithm(G, X, n):
-    step = (n * e)         # Compute step
+    step = (n * e)          # Compute step
     print(step)
-    l = log(n)             # Number of iterations
-    d = round((l / 4), 10) # Limit on probability error
+    l = int(log(n)/log(2))  # Number of iterations
+    d = round((l / 4), 10)  # Limit on probability error
 
     period = calculate_order(G, n)
 
     # Repeat until logarithm is found.
     while True:
-        c = 0
-        i = l - 1
-
         # Make initial guess. 
-        while c <= (n - 1):
+        for c in arange(0, n-1+step, step):
             print("c:", c)
             
             # Refine guess.
-            while i >= 0:
-                Xi = ((2 ** i) * X) % n
+            for i in range(l-1, -1, -1):
+                print("i:", i)
+                Xi = (X ** (2**i)) % n
 
                 if (EstimateCrossCorrelation(G, Xi, n, c/2, d, period)
                     > EstimateCrossCorrelation(G, Xi, n, c/2 + n/2, d, period)):
-                    c = c/2
+                    c = (c/2) % period
                 else:
-                    c = (c/2 + n/2)
-
-                i -= 1
-            c += step
+                    c = (c/2 + n/2) % period
             
-        if ((G ** c) % n) == X:
-            return c
+            print("Result:", int(round(c)))
+            potential = int(round(c)) % n
+            if ((G ** potential) % n) == X:
+                return potential
 
 # Should return 3
 print(Logarithm(7, 13, 15))
