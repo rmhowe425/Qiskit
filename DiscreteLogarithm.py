@@ -1,8 +1,22 @@
 from numpy import log, sqrt, floor, pi, arange
-from random import randint
+from random import randint, random
 from algorithm import oracle
 
-e = 1/pi   # Minimum epsilon from the Magic Box paper.
+# def oracle(a, b, N):
+#     r = calculate_order(a, N)
+#     power = 1
+#     while (a**power) % N != b:
+#         power += 1
+#     HB = 0
+#     if (r/2 <= power):
+#         HB = 1
+#     correct = random()
+#     if correct <= 0.6:
+#         return HB
+#     else:
+#         return (HB + 1) % 2
+
+e = 1/pi   # Maximum epsilon from the Magic Box paper.
 
 def calculate_order(a, n):
     power = 1
@@ -46,11 +60,11 @@ def EstimateCrossCorrelation(G, X, n, l, d, period):
 
     # Compute the number of trials
     m = int(round(2 / (sqrt(d) * e)))
-    print("m:", m)
+    # print("m:", m)
 
     # Compute estimate
     for trial in range(m):
-        print("Trial:", trial)
+        # print("Trial:", trial)
         t = randint(1, n)
         output = oracle(G, X, n)  # Oracle(base, LHS, mod)
 
@@ -76,11 +90,12 @@ def EstimateCrossCorrelation(G, X, n, l, d, period):
 '''
 def Logarithm(G, X, n):
     step = (n * e)          # Compute step
-    print(step)
+    print("Step:", step)
     l = int(log(n)/log(2))  # Number of iterations
     d = round((l / 4), 10)  # Limit on probability error
 
     period = calculate_order(G, n)
+    print("Period:", period)
 
     # Repeat until logarithm is found.
     while True:
@@ -98,11 +113,15 @@ def Logarithm(G, X, n):
                     c = (c/2) % period
                 else:
                     c = (c/2 + n/2) % period
+                print("c:", c)
             
-            print("Result:", int(round(c)))
-            potential = int(round(c)) % n
+            print("Result:", int(floor(c)))
+            potential = int(floor(c))
             if ((G ** potential) % n) == X:
                 return potential
 
 # Should return 3
 print(Logarithm(7, 13, 15))
+
+# Should return 11, but way too slow to run
+# print(Logarithm(7, 20, 31))

@@ -126,7 +126,7 @@ def oracle(a, b, N, verbose=False):
                 bit = int(kInv[i])
                 if bit == 1:
                     # Apply U operation only if the value of cr1 is y.
-                    U = create_unitary(b**(2**i), N)
+                    U = create_unitary(b**(2**i) % N, N)
                     qc.iso(U, [qr2[i] for i in range(n)], []).c_if(cr1, y)
     
     qc.barrier()
@@ -164,11 +164,3 @@ def oracle(a, b, N, verbose=False):
         return 0
     else:
         return 1
-
-# print(oracle(3, 1, 13, True))
-
-# Solves the discrete logarithm problem for 
-# b = a^m (mod N) using repeated calls to the
-# oracle defined above.
-def logarithm(a, b, N):
-    return 0
