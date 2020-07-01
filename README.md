@@ -2,6 +2,8 @@
 
 *Qiskit Community Summer Jam: North Carolina*
 
+To view our final product (correctly formatted), go to [this url](https://rawcdn.githack.com/rmhowe425/Qiskit/31620d163a12256be7c400e439bdefe09c53f9be/Final%20Product.html).
+
 ### Project Description
 
 Given a modulus *N*, let *a* be an element of multiplicative order *r* in the integers modulo *N*. Also let *b* be a power of *a*, such that *b* = *a<sup>m</sup>* (mod *N*). The *half bit* of *b*, *HB(b)*, is defined as follows:
